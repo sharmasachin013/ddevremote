@@ -875,6 +875,29 @@ $settings['migrate_node_migrate_type_classic'] = FALSE;
 # $settings['migrate_file_public_path'] = '';
 # $settings['migrate_file_private_path'] = '';
 
+// Enable Redis as default cache backend.
+$settings['cache']['default'] = 'cache.backend.redis';
+
+// Redis server connection info.
+$settings['redis.connection']['interface'] = 'PhpRedis';
+$settings['redis.connection']['host'] = 'redis';
+
+// Include the Redis services definition file.
+$settings['container_yamls'][] = 'modules/contrib/redis/example.services.yml';
+
+// Optional performance settings.
+$settings['redis_compress_length'] = 100;
+$settings['redis_compress_level'] = 1;
+
+// Redis lock and flood control (optional).
+$settings['lock']['redis'] = [
+  'class' => '\Drupal\redis\Lock\RedisLockBackend',
+];
+$settings['flood']['redis'] = [
+  'class' => '\Drupal\redis\Flood\RedisFloodBackend',
+];
+
+
 // Automatically generated include for settings managed by ddev.
 if (getenv('IS_DDEV_PROJECT') == 'true' && file_exists(__DIR__ . '/settings.ddev.php')) {
   include __DIR__ . '/settings.ddev.php';
@@ -897,3 +920,8 @@ if (getenv('IS_DDEV_PROJECT') == 'true' && file_exists(__DIR__ . '/settings.ddev
 # if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
 #   include $app_root . '/' . $site_path . '/settings.local.php';
 # }
+
+// Include settings required for Redis cache.
+if (getenv('IS_DDEV_PROJECT') == 'true' && file_exists(__DIR__ . '/settings.ddev.redis.php')) {
+  include __DIR__ . '/settings.ddev.redis.php';
+}
